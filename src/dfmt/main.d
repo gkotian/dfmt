@@ -56,6 +56,9 @@ else
             case "compact_labeled_statements":
                 optConfig.dfmt_compact_labeled_statements = optVal;
                 break;
+            case "only_token_info":
+                optConfig.dfmt_show_only_token_info = optVal;
+                break;
             default:
                 assert(false, "Invalid command-line switch");
             }
@@ -81,7 +84,8 @@ else
                 "split_operator_at_line_end", &handleBooleans,
                 "compact_labeled_statements", &handleBooleans,
                 "tab_width", &optConfig.tab_width,
-                "template_constraint_style", &optConfig.dfmt_template_constraint_style);
+                "template_constraint_style", &optConfig.dfmt_template_constraint_style,
+                "only_token_info", &handleBooleans);
             // dfmt on
         }
         catch (GetOptException e)
