@@ -18,6 +18,8 @@ import std.array;
 void format(OutputRange)(string source_desc, ubyte[] buffer, OutputRange output,
         Config* formatterConfig)
 {
+    import dfmt.editorconfig : OptionalBoolean;
+
     LexerConfig config;
     config.stringBehavior = StringBehavior.source;
     config.whitespaceBehavior = WhitespaceBehavior.skip;
@@ -34,6 +36,71 @@ void format(OutputRange)(string source_desc, ubyte[] buffer, OutputRange output,
     astInformation.cleanup();
     auto tokens = byToken(buffer, config, &cache).array();
     auto depths = generateDepthInfo(tokens);
+
+    if (formatterConfig.dfmt_show_only_token_info == OptionalBoolean.t)
+    {
+        import std.stdio;
+
+        string getOtherAttribs (IdType tokenType)
+        {
+            string attribsStr = "";
+            bool firstAttrib = true;
+
+            void appendAttrib (string attrib)
+            {
+                if (!firstAttrib)
+                {
+                    attribsStr ~= ", ";
+                }
+
+                attribsStr ~= attrib;
+                firstAttrib = false;
+            }
+
+            if (isKeyword(tokenType))
+            {
+                appendAttrib("isKeyword");
+            }
+
+            if (isBasicType(tokenType))
+            {
+                appendAttrib("isBasicType");
+            }
+
+            if (isOperator(tokenType))
+            {
+                appendAttrib("isOperator");
+            }
+
+            if (isStringLiteral(tokenType))
+            {
+                appendAttrib("isStringLiteral");
+            }
+
+            if (isNumberLiteral(tokenType))
+            {
+                appendAttrib("isNumberLiteral");
+            }
+
+            return attribsStr;
+        }
+
+        writefln("total num tokens = %s", tokens.length);
+
+        foreach(i, t; tokens)
+        {
+            writefln("%s. string = %s", i + 1, str(t.type));
+            writefln("    text = %s", t.text);
+            writefln("    type = %s", t.type);
+            writefln("    depth = %s", depths[i]);
+            writefln("    line num = %s", t.line);
+            writefln("    other attributes = %s", getOtherAttribs(t.type));
+            writeln("");
+        }
+
+        return;
+    }
+
     auto tokenFormatter = TokenFormatter!OutputRange(buffer, tokens, depths,
             output, &astInformation, formatterConfig);
     tokenFormatter.format();

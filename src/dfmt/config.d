@@ -51,6 +51,8 @@ struct Config
     OptionalBoolean dfmt_compact_labeled_statements;
     ///
     TemplateConstraintStyle dfmt_template_constraint_style;
+    ///
+    OptionalBoolean dfmt_show_only_token_info;
 
     mixin StandardEditorConfigFields;
 
@@ -76,6 +78,7 @@ struct Config
         dfmt_selective_import_space = OptionalBoolean.t;
         dfmt_compact_labeled_statements = OptionalBoolean.t;
         dfmt_template_constraint_style = TemplateConstraintStyle.conditional_newline_indent;
+        dfmt_show_only_token_info = OptionalBoolean.f;
     }
 
     /**
