@@ -5,5 +5,11 @@
     "license": "BSL-1.0",
     "dependencies": {
       "libdparse": "~>0.5.0"
-    }
+    },
+    "configurations": [
+        {
+            "name": "OnlyShowTokenInfo",
+            "versions": ["OnlyShowTokenInfo"]
+        }
+    ]
 }

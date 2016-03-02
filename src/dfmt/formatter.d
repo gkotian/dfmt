@@ -14,6 +14,11 @@ import dfmt.tokens;
 import dfmt.wrapping;
 import std.array;
 
+version (OnlyShowTokenInfo)
+{
+    import std.stdio;
+}
+
 void format(OutputRange)(string source_desc, ubyte[] buffer, OutputRange output,
         Config* formatterConfig)
 {
@@ -32,9 +37,25 @@ void format(OutputRange)(string source_desc, ubyte[] buffer, OutputRange output,
     astInformation.cleanup();
     auto tokens = byToken(buffer, config, &cache).array();
     auto depths = generateDepthInfo(tokens);
-    auto tokenFormatter = TokenFormatter!OutputRange(buffer, tokens, depths,
-            output, &astInformation, formatterConfig);
-    tokenFormatter.format();
+
+    version (OnlyShowTokenInfo)
+    {
+        writefln("total num tokens = %s", tokens.length);
+        foreach(i, t; tokens)
+        {
+            writefln("%s. string = %s", i + 1, str(t.type));
+            writefln("    text = %s", t.text);
+            writefln("    type = %s", t.type);
+            writefln("    depth = %s", depths[i]);
+            writeln("");
+        }
+    }
+    else
+    {
+        auto tokenFormatter = TokenFormatter!OutputRange(buffer, tokens, depths,
+                output, &astInformation, formatterConfig);
+        tokenFormatter.format();
+    }
 }
 
 immutable(short[]) generateDepthInfo(const Token[] tokens) pure nothrow @trusted
