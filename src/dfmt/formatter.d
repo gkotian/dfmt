@@ -164,6 +164,11 @@ struct TokenFormatter(OutputRange)
     /// Runs the formatting process
     void format()
     {
+        if (!currentIs(tok!"comment"))
+        {
+            writeDefaultModuleHeader();
+        }
+
         while (index < tokens.length)
             formatStep();
     }
@@ -222,6 +227,9 @@ private:
     /// True if we're in an ASM block
     bool inAsm;
 
+    /// Module header sections
+    string[] moduleHdrSections;
+
     void formatStep()
     {
         import std.range : assumeSorted;
@@ -229,7 +237,25 @@ private:
         assert(index < tokens.length);
         if (currentIs(tok!"comment"))
         {
-            formatComment();
+            if (index == 0)
+            {
+                auto isPossibleModuleHeader = analyseModuleHeader(current.text);
+
+                if (!isPossibleModuleHeader)
+                {
+                    writeDefaultModuleHeader();
+                    formatComment();
+                }
+                else
+                {
+                    formatModuleHeader();
+                    index++;
+                }
+            }
+            else
+            {
+                formatComment();
+            }
         }
         else if (isStringLiteral(current.type)
                 || isNumberLiteral(current.type) || currentIs(tok!"characterLiteral"))
@@ -1294,6 +1320,43 @@ private:
         regenLineBreakHintsIfNecessary(index - 1);
     }
 
+    void formatModuleHeader()
+    in
+    {
+        assert(index == 0);
+    }
+    body
+    {
+        import std.string : splitLines, strip;
+
+        enum bigCommentFirstLine = "/****************************************" ~
+            "***************************************";
+        enum bigCommentLastLine = "******************************************" ~
+            "*************************************/";
+
+        output.put(bigCommentFirstLine ~ "\n\n");
+
+        foreach (section; moduleHdrSections)
+        {
+            foreach (line; splitLines(section))
+            {
+                line = strip(line);
+
+                if (line.length > 0)
+                {
+                    output.put("    " ~ line);
+                }
+
+                output.put("\n");
+            }
+        }
+
+        output.put("    Copyright: copyright 2016 sociomantic labs GmbH. " ~
+            "All rights reserved\n\n");
+
+        output.put(bigCommentLastLine ~ "\n\n");
+    }
+
     void regenLineBreakHints(immutable size_t i)
     {
         immutable size_t j = expressionEndIndex(i);
@@ -1580,6 +1643,135 @@ private:
         }
         else if (indents.wrapIndents < 1)
             indents.push(t);
+    }
+
+    void writeDefaultModuleHeader()
+    in
+    {
+        assert(index == 0);
+    }
+    body
+    {
+        moduleHdrSections.length = 0;
+
+        moduleHdrSections ~= "TODO: Module description\n\n";
+
+        formatModuleHeader();
+    }
+
+    /**
+     * If the module header candidate contains a copyright, it is going to be
+     * simply ignored.
+     * TODO: this could create a problem with old tango code which has
+     * non-sociomantic copyrights. Maybe we should retain the existing copyright
+     * if "sociomantic" doesn't appear in the copyright string.
+     *
+     * Returns:
+     *     true if the given candidate is a potential module header (in which
+     *     case it may get modified if necessary), false otherwise (in which
+     *     case a default module header will be added under which this candidate
+     *     will appear as is)
+     */
+    bool analyseModuleHeader(string moduleHdrCandidate)
+    in
+    {
+        assert(index == 0);
+    }
+    body
+    {
+        import std.string : endsWith, indexOf, splitLines, startsWith, strip,
+               CaseSensitive;
+
+        if (!moduleHdrCandidate.startsWith("/**********") ||
+            !moduleHdrCandidate.endsWith("**********/"))
+        {
+            return false;
+        }
+
+        bool skipNextBlankLine = false;
+        auto curSectionIndex = 0;
+
+        foreach (lineNum, line; splitLines(moduleHdrCandidate))
+        {
+            if (lineNum == 0)
+                continue;
+
+            line = strip(line);
+
+            if (line.startsWith("*****") && line.endsWith("*/"))
+                continue;
+
+            if (line.length == 0)
+            {
+                // Skip empty lines if we haven't started collecting any section
+                // yet, otherwise empty lines belong to the section currently
+                // being collected.
+                if (!skipNextBlankLine && moduleHdrSections.length > 0)
+                {
+                    moduleHdrSections[curSectionIndex] ~= "\n";
+                }
+
+                skipNextBlankLine = false;
+
+                continue;
+            }
+
+            auto posColon = indexOf(line, ':');
+
+            if (posColon < 0)
+            {
+                // If we haven't started collecting any section yet, and have
+                // encountered a line without a colon, then it must be the
+                // module description.
+                if (moduleHdrSections.length == 0)
+                {
+                    moduleHdrSections.length = 1;
+                }
+            }
+            else
+            {
+                auto label = line[0 .. posColon];
+
+                // Assume that labels cannot contain spaces (because if they do,
+                // then how can we distinguish a label from the content of a
+                // section that internally contains a colon?)
+                if (label.length > 0 && indexOf(label, ' ') < 0)
+                {
+                    moduleHdrSections.length = moduleHdrSections.length + 1;
+                    if (curSectionIndex > 0)
+                    {
+                        curSectionIndex++;
+                    }
+
+                    // We deliberately skip the copyright line and the
+                    // immediately following blank line, if any. Hopefully, the
+                    // copyright will be in only one line; if not, the second
+                    // line of the copyright onwards will be treated as a
+                    // separate module header section.
+                    if (indexOf(label, "copyright", 0, CaseSensitive.no) >= 0)
+                    {
+                        skipNextBlankLine = true;
+                        continue;
+                    }
+                }
+            }
+
+            moduleHdrSections[curSectionIndex] ~= line ~ "\n";
+        }
+
+        if (moduleHdrSections.length == 0)
+        {
+            return false;
+        }
+
+        // If the module header contains only a copyright statement and nothing
+        // else.
+        if (moduleHdrSections.length == 1 && moduleHdrSections[0].length == 0)
+        {
+            moduleHdrSections[0] = "TODO: Module description\n\n";
+        }
+
+        return true;
     }
 
 const pure @safe @nogc:
