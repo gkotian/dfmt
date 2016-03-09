@@ -1682,8 +1682,7 @@ private:
         import std.string : endsWith, indexOf, splitLines, startsWith, strip,
                CaseSensitive;
 
-        if (!moduleHdrCandidate.startsWith("/**********") ||
-            !moduleHdrCandidate.endsWith("**********/"))
+        if (!isBlockComment(moduleHdrCandidate))
         {
             return false;
         }
@@ -2012,6 +2011,18 @@ const pure @safe @nogc:
     {
         return t == tok!"," || t == tok!";" || t == tok!":" || t == tok!"("
             || t == tok!")" || t == tok!"[" || t == tok!"]" || t == tok!"{" || t == tok!"}";
+    }
+
+    bool isBlockComment(string text) nothrow
+    {
+        import std.string : endsWith, startsWith;
+
+        if (!text.startsWith("/**********") || !text.endsWith("**********/"))
+        {
+            return false;
+        }
+
+        return true;
     }
 }
 
