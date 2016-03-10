@@ -230,6 +230,47 @@ private:
     /// Module header sections
     string[] moduleHdrSections;
 
+
+
+
+
+
+
+
+
+
+
+    struct IndividualSubSection
+    {
+        string name;
+
+        string[] lines;
+    }
+
+    struct IndividualSection
+    {
+        string name;
+
+        string[] lines;
+
+        size_t startLineNum;
+
+        IndividualSubSection[] subSections;
+    }
+
+    /// Block comment sections
+    IndividualSection[] blockCommentSections;
+
+
+
+
+
+
+
+
+
+
+
     void formatStep()
     {
         import std.range : assumeSorted;
@@ -254,6 +295,11 @@ private:
             }
             else
             {
+                if (isBlockComment(current.text))
+                {
+                    parseBlockComment(current.text, current.line);
+describeBlockComment(current.text, current.line);
+                }
                 formatComment();
             }
         }
@@ -1654,7 +1700,7 @@ private:
     {
         moduleHdrSections.length = 0;
 
-        moduleHdrSections ~= "TODO: Module description\n\n";
+        moduleHdrSections ~= "DFMT_TODO: Module description\n\n";
 
         formatModuleHeader();
     }
@@ -1767,10 +1813,263 @@ private:
         // else.
         if (moduleHdrSections.length == 1 && moduleHdrSections[0].length == 0)
         {
-            moduleHdrSections[0] = "TODO: Module description\n\n";
+            moduleHdrSections[0] = "DFMT_TODO: Module description\n\n";
         }
 
         return true;
+    }
+
+    void parseBlockComment(string text, size_t blockCommentStartLineNum)
+    {
+        import std.string : endsWith, indexOf, splitLines, startsWith, strip;
+
+        int curSectionIndex = -1;
+        bool justAddedBlankLineWithinGenDesc;
+
+        foreach (lineNum, line; splitLines(text))
+        {
+            if (lineNum == 0)
+            {
+                continue;
+            }
+
+            line = strip(line);
+
+            if (line.startsWith("*****") && line.endsWith("*/"))
+            {
+                continue;
+            }
+
+            if (line.length == 0)
+            {
+                // Skip empty lines if we haven't started collecting any section
+                // yet, or we're collecting a section other than the
+                // 'general_description' section.
+                if (curSectionIndex < 0 ||
+                    blockCommentSections[curSectionIndex].name != "general_description")
+                {
+                    continue;
+                }
+
+                // Even within the 'general_description' section, two
+                // consecutive blank lines are not allowed.
+                if (justAddedBlankLineWithinGenDesc)
+                {
+                    continue;
+                }
+
+                blockCommentSections[curSectionIndex].lines ~= "";
+                justAddedBlankLineWithinGenDesc = true;
+                continue;
+            }
+            else
+            {
+                justAddedBlankLineWithinGenDesc = false;
+            }
+
+            auto posColon = indexOf(line, ':');
+
+            if (posColon < 0)
+            {
+                // If we haven't started collecting any section yet, and have
+                // encountered a line without a colon, then we collect that into
+                // the first general section.
+                if (curSectionIndex == -1)
+                {
+                    blockCommentSections.length = 1;
+
+                    curSectionIndex = 0;
+
+                    blockCommentSections[curSectionIndex].name =
+                        "general_description";
+
+                    blockCommentSections[curSectionIndex].lines.length = 0;
+                }
+
+                blockCommentSections[curSectionIndex].lines ~= line;
+            }
+            else
+            {
+                // A colon exists on the line.
+
+                auto label = line[0 .. posColon];
+
+                label = strip(label);
+
+                bool isReallyLabel = true;
+
+                if (!label.length)
+                {
+                    // The colon is at the beginning of the line.
+                    isReallyLabel = false;
+                }
+                else if (indexOf(label, ' ') >= 0)
+                {
+                    // Labels cannot generally have spaces in them. The only
+                    // exception is "Template Params".
+                    if (label != "Template Params")
+                    {
+                        isReallyLabel = false;
+                    }
+                }
+
+                if (isReallyLabel)
+                {
+                    blockCommentSections.length = blockCommentSections.length + 1;
+
+                    curSectionIndex++;
+
+                    blockCommentSections[curSectionIndex].name = label;
+
+                    blockCommentSections[curSectionIndex].startLineNum =
+                        blockCommentStartLineNum + lineNum;
+
+                    blockCommentSections[curSectionIndex].lines.length = 0;
+
+                    auto partAfterLabel = line[posColon + 1 .. $];
+
+                    if (partAfterLabel.length)
+                    {
+                        blockCommentSections[curSectionIndex].lines ~=
+                            partAfterLabel;
+                    }
+                }
+            }
+        }
+
+        foreach (ref section; blockCommentSections)
+        {
+            if (section.name == "Params" || section.name == "Template Params")
+            {
+                parseSubSection(section);
+            }
+        }
+    }
+
+    void parseSubSection(ref IndividualSection section)
+    in
+    {
+        assert(section.name == "Params" || section.name == "Template Params",
+            "Attempting to parse sub-sections of a section that doesn't have " ~
+            "sub-sections");
+    }
+    body
+    {
+        import std.string : indexOf, strip;
+
+        int curSubSectionIndex = -1;
+
+        foreach (line; section.lines)
+        {
+            line = strip(line);
+
+            auto posEquals = indexOf(line, '=');
+
+            if (posEquals < 0)
+            {
+                if (curSubSectionIndex == -1)
+                {
+                    section.subSections.length = 1;
+                    curSubSectionIndex = 0;
+                    section.subSections[curSubSectionIndex].name = "DFMT_TODO";
+                }
+
+                section.subSections[curSubSectionIndex].lines ~= line;
+            }
+            else
+            {
+                auto subSectionName = line[0 .. posEquals];
+
+                subSectionName = strip(subSectionName);
+
+                if (!subSectionName.length)
+                {
+                    subSectionName = "DFMT_TODO";
+                }
+                else
+                {
+                    if (indexOf(subSectionName, ' ') >= 0)
+                    {
+                        // warning - space in variable name
+                    }
+                }
+
+                section.subSections.length = section.subSections.length + 1;
+
+                curSubSectionIndex++;
+
+                section.subSections[curSubSectionIndex].name = subSectionName;
+
+                if (posEquals + 1 < line.length)
+                {
+                    auto partAfterEquals = line[posEquals + 1 .. $];
+
+                    partAfterEquals = strip(partAfterEquals);
+
+                    if (partAfterEquals.length)
+                    {
+                        section.subSections[curSubSectionIndex].lines ~=
+                            partAfterEquals;
+                    }
+                    else
+                    {
+                        section.subSections[curSubSectionIndex].lines ~= "DFMT_TODO";
+                    }
+                }
+                else
+                {
+                    section.subSections[curSubSectionIndex].lines ~= "DFMT_TODO";
+                }
+            }
+        }
+
+        if (curSubSectionIndex < 0)
+        {
+            // warning - no sub-sections were found
+        }
+        else
+        {
+            // All further interaction with this section should be via its
+            // sub-sections
+            section.lines.length = 0;
+        }
+    }
+
+    void describeBlockComment(string text, size_t blockCommentStartLineNum)
+    {
+        import std.stdio;
+
+        writeln("");
+        writefln("Break-up of block comment on line: %s",
+                 blockCommentStartLineNum);
+        writefln("    Total num sections = %s", blockCommentSections.length);
+
+        foreach (i, section; blockCommentSections)
+        {
+            writefln("        section %s - %s", i+1, section.name);
+
+            if (section.subSections.length)
+            {
+                writefln("            has sub sections: yes (%s)",
+                    section.subSections.length);
+
+                foreach (j, subSection; section.subSections)
+                {
+                    writefln("            %s: %s = %s",
+                        j, subSection.name, subSection.lines);
+                }
+            }
+            else
+            {
+                writefln("            has sub sections: no");
+
+                writefln("            num lines = %s", section.lines.length);
+                foreach (j, line; section.lines)
+                {
+                    writefln("            %s: %s", j, line);
+                }
+            }
+        }
     }
 
 const pure @safe @nogc:
