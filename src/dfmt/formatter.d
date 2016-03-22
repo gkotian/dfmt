@@ -159,6 +159,16 @@ struct TokenFormatter(OutputRange)
         this.output = output;
         this.astInformation = astInformation;
         this.config = config;
+
+        short maxDepth;
+        foreach (depth; depths)
+        {
+            if (depth > maxDepth)
+            {
+                maxDepth = depth;
+            }
+        }
+        inClassOrStructStack.length = maxDepth;
     }
 
     /// Runs the formatting process
@@ -227,6 +237,13 @@ private:
     /// True if we're in an ASM block
     bool inAsm;
 
+    /// True if we're currently in a class or struct block
+    bool inClassOrStruct;
+
+    /// Stack to help us determine if we should be in a class or struct block
+    /// when the depth changes
+    bool[] inClassOrStructStack;
+
     /// Module header sections
     string[] moduleHdrSections;
 
@@ -274,8 +291,28 @@ private:
     void formatStep()
     {
         import std.range : assumeSorted;
+import std.stdio;
 
         assert(index < tokens.length);
+
+        auto curDepth = depths[index];
+
+        if (currentIs(tok!"}"))
+        {
+auto prevInClassOrStruct = inClassOrStruct;
+            if (curDepth > 0)
+            {
+                inClassOrStruct = inClassOrStructStack[curDepth - 1];
+            }
+            else
+            {
+                inClassOrStruct = false;
+            }
+writefln("Checking on line %s", current.line);
+if (prevInClassOrStruct != inClassOrStruct) { writefln("changing status"); }
+else { writeln("retaining current status"); }
+        }
+
         if (currentIs(tok!"comment"))
         {
             if (index == 0)
@@ -298,7 +335,7 @@ private:
                 if (isBlockComment(current.text))
                 {
                     parseBlockComment(current.text, current.line);
-describeBlockComment(current.text, current.line);
+// describeBlockComment(current.text, current.line);
                 }
                 formatComment();
             }
@@ -389,6 +426,13 @@ describeBlockComment(current.text, current.line);
         }
         else if (isKeyword(current.type))
         {
+            if (currentIs(tok!"class") || currentIs(tok!"struct"))
+            {
+                inClassOrStruct = true;
+                inClassOrStructStack[curDepth] = true;
+                writefln("Entering class or struct on line %s", current.line);
+            }
+
             formatKeyword();
         }
         else if (isBasicType(current.type))
