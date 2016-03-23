@@ -2272,6 +2272,21 @@ const pure @safe @nogc:
         return isKeyword(tokens[i].type);
     }
 
+    bool peekBackIsBasicType(bool ignoreComments = true) nothrow
+    {
+        if (index == 0)
+            return false;
+        auto i = index - 1;
+        if (ignoreComments)
+            while (tokens[i].type == tok!"comment")
+            {
+                if (i == 0)
+                    return false;
+                i--;
+            }
+        return isBasicType(tokens[i].type);
+    }
+
     bool peekBackIsOperator() nothrow
     {
         return index == 0 ? false : isOperator(tokens[index - 1].type);
