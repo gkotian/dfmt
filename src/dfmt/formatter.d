@@ -4,6 +4,7 @@
 //          http://www.boost.org/LICENSE_1_0.txt)
 
 module dfmt.formatter;
+import std.stdio;
 
 import dparse.lexer;
 import dparse.parser;
@@ -240,6 +241,34 @@ private:
     /// True if we're currently in a class or struct block
     bool inClassOrStruct;
 
+    /// The protection attribute of the current symbol, if defined
+    string curProtectionAttribute;
+
+    /// True if the type of the current member has been found
+    bool memberTypeFound;
+
+    /// The type of the current symbol
+    string curType;
+
+    /// True if we're currently in the signature of a member function of a class
+    /// or struct
+    bool inMemberFunctionSignature;
+
+    /// True if we're currently in the body of a member function of a class or
+    /// struct
+    bool inMemberFunctionBody;
+
+    struct Parameter
+    {
+        string type;
+        string name;
+        bool isTemplateParam;
+    }
+
+    Parameter[] curFunctionParams;
+
+    bool lookingForParamType;
+
     /// Stack to help us determine if we should be in a class or struct block
     /// when the depth changes
     bool[] inClassOrStructStack;
@@ -291,7 +320,6 @@ private:
     void formatStep()
     {
         import std.range : assumeSorted;
-import std.stdio;
 
         assert(index < tokens.length);
 
@@ -299,7 +327,6 @@ import std.stdio;
 
         if (currentIs(tok!"}"))
         {
-auto prevInClassOrStruct = inClassOrStruct;
             if (curDepth > 0)
             {
                 inClassOrStruct = inClassOrStructStack[curDepth - 1];
@@ -308,9 +335,6 @@ auto prevInClassOrStruct = inClassOrStruct;
             {
                 inClassOrStruct = false;
             }
-writefln("Checking on line %s", current.line);
-if (prevInClassOrStruct != inClassOrStruct) { writefln("changing status"); }
-else { writeln("retaining current status"); }
         }
 
         if (currentIs(tok!"comment"))
@@ -430,23 +454,143 @@ else { writeln("retaining current status"); }
             {
                 inClassOrStruct = true;
                 inClassOrStructStack[curDepth] = true;
-                writefln("Entering class or struct on line %s", current.line);
+            }
+            else if (inClassOrStruct)
+            {
+                // We've encountered a keyword when we're already within an
+                // aggregate.
+                if (inMemberFunctionSignature || inMemberFunctionBody)
+                {
+                }
+                else
+                {
+                    if (currentIs(tok!"private") ||
+                        currentIs(tok!"protected") ||
+                        currentIs(tok!"public"))
+                    {
+                        curProtectionAttribute = str(current.type);
+                    }
+                    else if (currentIs(tok!"this"))
+                    {
+                        // This is one of the constructors of the class
+                        inMemberFunctionSignature = true;
+                        curFunctionParams.length = 0;
+
+                        // Pre-create space for the first parameter info
+                        Parameter p;
+                        curFunctionParams ~= p;
+                        lookingForParamType = true;
+                    }
+                }
             }
 
             formatKeyword();
         }
         else if (isBasicType(current.type))
         {
+            if (inClassOrStruct)
+            {
+                if (inMemberFunctionSignature)
+                {
+                    // This basic type is the type (or only a part of the type)
+                    // of the current parameter.
+                    curFunctionParams[$ - 1].type ~= str(current.type);
+                }
+                else if (inMemberFunctionBody)
+                {
+                }
+                else
+                {
+                    // This basic type is the current type or it continues to be
+                    // part of the current type
+                    curType ~= str(current.type);
+                }
+            }
+
             writeToken();
             if (currentIs(tok!"identifier") || isKeyword(current.type) || inAsm)
                 write(" ");
         }
         else if (isOperator(current.type))
         {
+            if (inClassOrStruct)
+            {
+                if (inMemberFunctionSignature)
+                {
+                    // Even if we're in a member function signature, just
+                    // finding a closing parenthesis doesn't mean it's the end
+                    // of the list. The closing parenthesis may just be part of
+                    // the type of a parameter, e.g. HashMap!(bool). So we need
+                    // to also check whether the 'lookingForParamType' flag has
+                    // been set.
+                    if (currentIs(tok!")") && lookingForParamType)
+                    {
+                        if (peekIs(tok!"("))
+                        {
+                            // This is only the end of the template parameters.
+                            // The runtime parameters are still to be parsed.
+                            // Mark all parameters parsed so far as template
+                            // parameters. Note that the last entry of the
+                            // 'curFunctionParams' array is not modified as that
+                            // is only a pre-created empty entry.
+                            foreach(ref p; curFunctionParams[0 .. $ - 1])
+                            {
+                                stderr.writefln("Marking '%s' as template param", p.name);
+                                p.isTemplateParam = true;
+                            }
+                        }
+                        else
+                        {
+stderr.writefln("Parameter parsing complete");
+                            // All parameters have been parsed. The member
+                            // function body will start next.
+                            inMemberFunctionSignature = false;
+                            inMemberFunctionBody = true;
+
+                            // Remove the last entry of the 'curFunctionParams'
+                            // array. It was only a pre-created empty entry.
+                            curFunctionParams = curFunctionParams[0 .. $ - 1];
+                        }
+                    }
+                }
+                else if (inMemberFunctionBody)
+                {
+                }
+                else
+                {
+                    if (currentIs(tok!";"))
+                    {
+                        curProtectionAttribute = "";
+                        memberTypeFound = false;
+                        curType = "";
+                    }
+                    else
+                    {
+                        // This operator continues to be part of the current type
+                        curType ~= str(current.type);
+                    }
+                }
+            }
+
             formatOperator();
         }
         else if (currentIs(tok!"identifier"))
         {
+            if (inClassOrStruct)
+            {
+                if (inMemberFunctionSignature)
+                {
+                    handleInMemberFuncSigIdentifier();
+                }
+                else if (inMemberFunctionBody)
+                {
+                }
+                else
+                {
+                    handleInAggregateIdentifier();
+                }
+            }
+
             writeToken();
             if (index < tokens.length && (currentIs(tok!"identifier")
                     || isBasicType(current.type) || currentIs(tok!"@") || currentIs(tok!"if")
@@ -463,6 +607,122 @@ else { writeln("retaining current status"); }
         }
         else
             writeToken();
+    }
+
+    void handleInAggregateIdentifier()
+    in
+    {
+        assert(currentIs(tok!"identifier") && inClassOrStruct);
+    }
+    body
+    {
+        stderr.writef("%s --> ", current.text);
+        if (peekBackIs(tok!"class") || peekBackIs(tok!"struct"))
+        {
+            // This is the name of either the outer class itself or a nested
+            // class, so not really an identifier.
+            stderr.writefln("%s name",
+                peekBackIs(tok!"class") ? "class" : "struct");
+            return;
+        }
+        else if (peekBackIs(tok!":") || peekBackIs(tok!","))
+        {
+            // This is the name of a base class, so not really an identifier.
+            stderr.writefln("base class");
+            return;
+        }
+
+        if (!memberTypeFound)
+        {
+            memberTypeFound = true;
+
+            if (!peekBackIsBasicType())
+            {
+                curType = current.text;
+
+                stderr.writefln("type");
+
+                if (curProtectionAttribute.length == 0)
+                {
+                    write("DFMT_TODO_protection-attribute ");
+                }
+
+                return;
+            }
+        }
+
+        if (peekBackIs(tok!"."))
+        {
+            stderr.writefln("continues to be part of the type");
+            curType ~= current.text;
+            return;
+        }
+
+        if (peekIs(tok!"("))
+        {
+            stderr.writefln("member function");
+            inMemberFunctionSignature = true;
+            curFunctionParams.length = 0;
+
+            // Pre-create space for the first parameter info
+            Parameter p;
+            curFunctionParams ~= p;
+            lookingForParamType = true;
+        }
+        else
+        {
+            stderr.writefln("%s member variable of type '%s'",
+                curProtectionAttribute, curType);
+        }
+    }
+
+    void handleInMemberFuncSigIdentifier()
+    in
+    {
+        assert(currentIs(tok!"identifier") && inClassOrStruct &&
+            inMemberFunctionSignature && !inMemberFunctionBody);
+    }
+    body
+    {
+        stderr.writef("%s --> ", current.text);
+
+        if (lookingForParamType)
+        {
+            if (!peekBackIsBasicType())
+            {
+                curFunctionParams[$ - 1].type = current.text;
+                lookingForParamType = false;
+
+                stderr.writefln("just the type of the next parameter");
+            }
+            else
+            {
+                curFunctionParams[$ - 1].name = current.text;
+                stderr.writefln("parameter of type '%s'", curFunctionParams[$ - 1].type);
+
+                // Pre-create space for the next parameter info
+                Parameter p;
+                curFunctionParams ~= p;
+            }
+
+            return;
+        }
+
+        if (peekBackIs(tok!"."))
+        {
+            stderr.writefln("continues to be part of the type");
+            curFunctionParams[$ - 1].type ~= current.text;
+            return;
+        }
+
+        curFunctionParams[$ - 1].name = current.text;
+
+        stderr.writefln("parameter of type '%s'", curFunctionParams[$ - 1].type);
+
+        // Pre-create space for the next parameter info
+        Parameter p;
+        curFunctionParams ~= p;
+        lookingForParamType = true;
     }
 
     void formatConstraint()
@@ -2083,34 +2343,34 @@ else { writeln("retaining current status"); }
     {
         import std.stdio;
 
-        writeln("");
-        writefln("Break-up of block comment on line: %s",
+        stderr.writeln("");
+        stderr.writefln("Break-up of block comment on line: %s",
                  blockCommentStartLineNum);
-        writefln("    Total num sections = %s", blockCommentSections.length);
+        stderr.writefln("    Total num sections = %s", blockCommentSections.length);
 
         foreach (i, section; blockCommentSections)
         {
-            writefln("        section %s - %s", i+1, section.name);
+            stderr.writefln("        section %s - %s", i+1, section.name);
 
             if (section.subSections.length)
             {
-                writefln("            has sub sections: yes (%s)",
+                stderr.writefln("            has sub sections: yes (%s)",
                     section.subSections.length);
 
                 foreach (j, subSection; section.subSections)
                 {
-                    writefln("            %s: %s = %s",
+                    stderr.writefln("            %s: %s = %s",
                         j, subSection.name, subSection.lines);
                 }
             }
             else
             {
-                writefln("            has sub sections: no");
+                stderr.writefln("            has sub sections: no");
 
-                writefln("            num lines = %s", section.lines.length);
+                stderr.writefln("            num lines = %s", section.lines.length);
                 foreach (j, line; section.lines)
                 {
-                    writefln("            %s: %s", j, line);
+                    stderr.writefln("            %s: %s", j, line);
                 }
             }
         }
