@@ -2150,6 +2150,25 @@ const pure @safe @nogc:
         return peekIs(tok!"identifier") && peek2Is(tok!":");
     }
 
+    bool peekIsOneOf(bool ignoreComments, IdType[] tokenTypes...) nothrow
+    {
+        if (index + 1 >= tokens.length)
+            return false;
+        auto i = index + 1;
+        if (ignoreComments)
+            while (tokens[i].type == tok!"comment")
+            {
+                i++;
+                if (i >= tokens.length)
+                    return false;
+            }
+        immutable t = tokens[i].type;
+        foreach (tt; tokenTypes)
+            if (tt == t)
+                return true;
+        return false;
+    }
+
     int currentTokenLength()
     {
         return tokenLength(tokens[index]);
