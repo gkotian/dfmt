@@ -1,0 +1,1463 @@
+total num tokens = 201
+1. string = comment
+    text = /*******************************************************************************
+
+    Copyright: (c) 2016 Sociomantic Labs GmbH. All rights reserved.
+
+    Does a lot
+    of things.
+
+*******************************************************************************/
+    type = 64
+    depth = 0
+    line num = 1
+    other attributes = 
+
+2. string = module
+    text = 
+    type = 140
+    depth = 0
+    line num = 10
+    other attributes = isKeyword
+
+3. string = identifier
+    text = redtowel
+    type = 65
+    depth = 0
+    line num = 10
+    other attributes = 
+
+4. string = .
+    text = 
+    type = 2
+    depth = 0
+    line num = 10
+    other attributes = isOperator
+
+5. string = identifier
+    text = mode
+    type = 65
+    depth = 0
+    line num = 10
+    other attributes = 
+
+6. string = .
+    text = 
+    type = 2
+    depth = 0
+    line num = 10
+    other attributes = isOperator
+
+7. string = identifier
+    text = DigitalOcean
+    type = 65
+    depth = 0
+    line num = 10
+    other attributes = 
+
+8. string = ;
+    text = 
+    type = 32
+    depth = 0
+    line num = 10
+    other attributes = isOperator
+
+9. string = comment
+    text = /*******************************************************************************
+
+    Imports
+
+*******************************************************************************/
+    type = 64
+    depth = 0
+    line num = 13
+    other attributes = 
+
+10. string = import
+    text = 
+    type = 128
+    depth = 0
+    line num = 19
+    other attributes = isKeyword
+
+11. string = identifier
+    text = redtowel
+    type = 65
+    depth = 0
+    line num = 19
+    other attributes = 
+
+12. string = .
+    text = 
+    type = 2
+    depth = 0
+    line num = 19
+    other attributes = isOperator
+
+13. string = identifier
+    text = config
+    type = 65
+    depth = 0
+    line num = 19
+    other attributes = 
+
+14. string = .
+    text = 
+    type = 2
+    depth = 0
+    line num = 19
+    other attributes = isOperator
+
+15. string = identifier
+    text = AppConfig
+    type = 65
+    depth = 0
+    line num = 19
+    other attributes = 
+
+16. string = ;
+    text = 
+    type = 32
+    depth = 0
+    line num = 19
+    other attributes = isOperator
+
+17. string = import
+    text = 
+    type = 128
+    depth = 0
+    line num = 20
+    other attributes = isKeyword
+
+18. string = identifier
+    text = redtowel
+    type = 65
+    depth = 0
+    line num = 20
+    other attributes = 
+
+19. string = .
+    text = 
+    type = 2
+    depth = 0
+    line num = 20
+    other attributes = isOperator
+
+20. string = identifier
+    text = mode
+    type = 65
+    depth = 0
+    line num = 20
+    other attributes = 
+
+21. string = .
+    text = 
+    type = 2
+    depth = 0
+    line num = 20
+    other attributes = isOperator
+
+22. string = identifier
+    text = model
+    type = 65
+    depth = 0
+    line num = 20
+    other attributes = 
+
+23. string = .
+    text = 
+    type = 2
+    depth = 0
+    line num = 20
+    other attributes = isOperator
+
+24. string = identifier
+    text = MegaModel
+    type = 65
+    depth = 0
+    line num = 20
+    other attributes = 
+
+25. string = ;
+    text = 
+    type = 32
+    depth = 0
+    line num = 20
+    other attributes = isOperator
+
+26. string = import
+    text = 
+    type = 128
+    depth = 0
+    line num = 21
+    other attributes = isKeyword
+
+27. string = identifier
+    text = redtowel
+    type = 65
+    depth = 0
+    line num = 21
+    other attributes = 
+
+28. string = .
+    text = 
+    type = 2
+    depth = 0
+    line num = 21
+    other attributes = isOperator
+
+29. string = identifier
+    text = processor
+    type = 65
+    depth = 0
+    line num = 21
+    other attributes = 
+
+30. string = .
+    text = 
+    type = 2
+    depth = 0
+    line num = 21
+    other attributes = isOperator
+
+31. string = identifier
+    text = ProcessorGreat
+    type = 65
+    depth = 0
+    line num = 21
+    other attributes = 
+
+32. string = ;
+    text = 
+    type = 32
+    depth = 0
+    line num = 21
+    other attributes = isOperator
+
+33. string = import
+    text = 
+    type = 128
+    depth = 0
+    line num = 22
+    other attributes = isKeyword
+
+34. string = identifier
+    text = redtowel
+    type = 65
+    depth = 0
+    line num = 22
+    other attributes = 
+
+35. string = .
+    text = 
+    type = 2
+    depth = 0
+    line num = 22
+    other attributes = isOperator
+
+36. string = identifier
+    text = processor
+    type = 65
+    depth = 0
+    line num = 22
+    other attributes = 
+
+37. string = .
+    text = 
+    type = 2
+    depth = 0
+    line num = 22
+    other attributes = isOperator
+
+38. string = identifier
+    text = ProcessorAmazing
+    type = 65
+    depth = 0
+    line num = 22
+    other attributes = 
+
+39. string = ;
+    text = 
+    type = 32
+    depth = 0
+    line num = 22
+    other attributes = isOperator
+
+40. string = import
+    text = 
+    type = 128
+    depth = 0
+    line num = 24
+    other attributes = isKeyword
+
+41. string = identifier
+    text = helicopter
+    type = 65
+    depth = 0
+    line num = 24
+    other attributes = 
+
+42. string = .
+    text = 
+    type = 2
+    depth = 0
+    line num = 24
+    other attributes = isOperator
+
+43. string = identifier
+    text = channels
+    type = 65
+    depth = 0
+    line num = 24
+    other attributes = 
+
+44. string = .
+    text = 
+    type = 2
+    depth = 0
+    line num = 24
+    other attributes = isOperator
+
+45. string = identifier
+    text = Card
+    type = 65
+    depth = 0
+    line num = 24
+    other attributes = 
+
+46. string = :
+    text = 
+    type = 31
+    depth = 0
+    line num = 24
+    other attributes = isOperator
+
+47. string = identifier
+    text = SuperChannel
+    type = 65
+    depth = 0
+    line num = 24
+    other attributes = 
+
+48. string = ;
+    text = 
+    type = 32
+    depth = 0
+    line num = 24
+    other attributes = isOperator
+
+49. string = import
+    text = 
+    type = 128
+    depth = 0
+    line num = 25
+    other attributes = isKeyword
+
+50. string = identifier
+    text = helicopter
+    type = 65
+    depth = 0
+    line num = 25
+    other attributes = 
+
+51. string = .
+    text = 
+    type = 2
+    depth = 0
+    line num = 25
+    other attributes = isOperator
+
+52. string = identifier
+    text = records
+    type = 65
+    depth = 0
+    line num = 25
+    other attributes = 
+
+53. string = .
+    text = 
+    type = 2
+    depth = 0
+    line num = 25
+    other attributes = isOperator
+
+54. string = identifier
+    text = phone
+    type = 65
+    depth = 0
+    line num = 25
+    other attributes = 
+
+55. string = .
+    text = 
+    type = 2
+    depth = 0
+    line num = 25
+    other attributes = isOperator
+
+56. string = identifier
+    text = NewStuff
+    type = 65
+    depth = 0
+    line num = 25
+    other attributes = 
+
+57. string = ;
+    text = 
+    type = 32
+    depth = 0
+    line num = 25
+    other attributes = isOperator
+
+58. string = import
+    text = 
+    type = 128
+    depth = 0
+    line num = 26
+    other attributes = isKeyword
+
+59. string = identifier
+    text = helicopter
+    type = 65
+    depth = 0
+    line num = 26
+    other attributes = 
+
+60. string = .
+    text = 
+    type = 2
+    depth = 0
+    line num = 26
+    other attributes = isOperator
+
+61. string = identifier
+    text = records
+    type = 65
+    depth = 0
+    line num = 26
+    other attributes = 
+
+62. string = .
+    text = 
+    type = 2
+    depth = 0
+    line num = 26
+    other attributes = isOperator
+
+63. string = identifier
+    text = phone
+    type = 65
+    depth = 0
+    line num = 26
+    other attributes = 
+
+64. string = .
+    text = 
+    type = 2
+    depth = 0
+    line num = 26
+    other attributes = isOperator
+
+65. string = identifier
+    text = OldStuff
+    type = 65
+    depth = 0
+    line num = 26
+    other attributes = 
+
+66. string = ;
+    text = 
+    type = 32
+    depth = 0
+    line num = 26
+    other attributes = isOperator
+
+67. string = comment
+    text = /*******************************************************************************
+
+    Module ctor
+
+*******************************************************************************/
+    type = 64
+    depth = 0
+    line num = 29
+    other attributes = 
+
+68. string = static
+    text = 
+    type = 158
+    depth = 0
+    line num = 35
+    other attributes = isKeyword
+
+69. string = this
+    text = 
+    type = 164
+    depth = 0
+    line num = 35
+    other attributes = isKeyword
+
+70. string = (
+    text = 
+    type = 21
+    depth = 1
+    line num = 35
+    other attributes = isOperator
+
+71. string = )
+    text = 
+    type = 22
+    depth = 0
+    line num = 35
+    other attributes = isOperator
+
+72. string = {
+    text = 
+    type = 56
+    depth = 1
+    line num = 36
+    other attributes = isOperator
+
+73. string = identifier
+    text = log
+    type = 65
+    depth = 1
+    line num = 37
+    other attributes = 
+
+74. string = =
+    text = 
+    type = 39
+    depth = 1
+    line num = 37
+    other attributes = isOperator
+
+75. string = identifier
+    text = Log
+    type = 65
+    depth = 1
+    line num = 37
+    other attributes = 
+
+76. string = .
+    text = 
+    type = 2
+    depth = 1
+    line num = 37
+    other attributes = isOperator
+
+77. string = identifier
+    text = lookup
+    type = 65
+    depth = 1
+    line num = 37
+    other attributes = 
+
+78. string = (
+    text = 
+    type = 21
+    depth = 2
+    line num = 37
+    other attributes = isOperator
+
+79. string = stringLiteral
+    text = "redtowel.mode.DigitalOcean"
+    type = 80
+    depth = 2
+    line num = 37
+    other attributes = isStringLiteral
+
+80. string = )
+    text = 
+    type = 22
+    depth = 1
+    line num = 37
+    other attributes = isOperator
+
+81. string = ;
+    text = 
+    type = 32
+    depth = 1
+    line num = 37
+    other attributes = isOperator
+
+82. string = }
+    text = 
+    type = 60
+    depth = 0
+    line num = 38
+    other attributes = isOperator
+
+83. string = comment
+    text = /*******************************************************************************
+
+    Implements our mode
+
+*******************************************************************************/
+    type = 64
+    depth = 0
+    line num = 41
+    other attributes = 
+
+84. string = public
+    text = 
+    type = 150
+    depth = 0
+    line num = 47
+    other attributes = isKeyword
+
+85. string = class
+    text = 
+    type = 99
+    depth = 0
+    line num = 47
+    other attributes = isKeyword
+
+86. string = identifier
+    text = ModeImplementor
+    type = 65
+    depth = 0
+    line num = 47
+    other attributes = 
+
+87. string = :
+    text = 
+    type = 31
+    depth = 0
+    line num = 47
+    other attributes = isOperator
+
+88. string = identifier
+    text = BaseImplementor
+    type = 65
+    depth = 0
+    line num = 47
+    other attributes = 
+
+89. string = {
+    text = 
+    type = 56
+    depth = 1
+    line num = 48
+    other attributes = isOperator
+
+90. string = comment
+    text = /***************************************************************************
+
+        Performs all operations.
+
+    ***************************************************************************/
+    type = 64
+    depth = 1
+    line num = 49
+    other attributes = 
+
+91. string = private
+    text = 
+    type = 148
+    depth = 1
+    line num = 55
+    other attributes = isKeyword
+
+92. string = identifier
+    text = SomeGuy
+    type = 65
+    depth = 1
+    line num = 55
+    other attributes = 
+
+93. string = identifier
+    text = some_processor
+    type = 65
+    depth = 1
+    line num = 55
+    other attributes = 
+
+94. string = ;
+    text = 
+    type = 32
+    depth = 1
+    line num = 55
+    other attributes = isOperator
+
+95. string = comment
+    text = /***************************************************************************
+
+        Flags whether something should be done.
+
+    ***************************************************************************/
+    type = 64
+    depth = 1
+    line num = 58
+    other attributes = 
+
+96. string = private
+    text = 
+    type = 148
+    depth = 1
+    line num = 64
+    other attributes = isKeyword
+
+97. string = bool
+    text = 
+    type = 89
+    depth = 1
+    line num = 64
+    other attributes = isBasicType
+
+98. string = identifier
+    text = do_or_not
+    type = 65
+    depth = 1
+    line num = 64
+    other attributes = 
+
+99. string = ;
+    text = 
+    type = 32
+    depth = 1
+    line num = 64
+    other attributes = isOperator
+
+100. string = comment
+    text = /***************************************************************************
+
+        A really good hashmap.
+        Used to decide whether to go for it.
+
+    ***************************************************************************/
+    type = 64
+    depth = 1
+    line num = 67
+    other attributes = 
+
+101. string = private
+    text = 
+    type = 148
+    depth = 1
+    line num = 74
+    other attributes = isKeyword
+
+102. string = identifier
+    text = HashMap
+    type = 65
+    depth = 1
+    line num = 74
+    other attributes = 
+
+103. string = !
+    text = 
+    type = 7
+    depth = 1
+    line num = 74
+    other attributes = isOperator
+
+104. string = (
+    text = 
+    type = 21
+    depth = 2
+    line num = 74
+    other attributes = isOperator
+
+105. string = bool
+    text = 
+    type = 89
+    depth = 2
+    line num = 74
+    other attributes = isBasicType
+
+106. string = )
+    text = 
+    type = 22
+    depth = 1
+    line num = 74
+    other attributes = isOperator
+
+107. string = identifier
+    text = adpan_active_source
+    type = 65
+    depth = 1
+    line num = 74
+    other attributes = 
+
+108. string = ;
+    text = 
+    type = 32
+    depth = 1
+    line num = 74
+    other attributes = isOperator
+
+109. string = comment
+    text = /***************************************************************************
+
+        In June 2015, Trump announced his candidacy for president as a
+        Republican and quickly emerged as the front-runner for his party's
+        nomination. In May 2016, his remaining Republican rivals suspended their
+        campaigns, and in July he was formally nominated for president at the
+        2016 Republican National Convention.
+
+    ***************************************************************************/
+    type = 64
+    depth = 1
+    line num = 77
+    other attributes = 
+
+110. string = protected
+    text = 
+    type = 149
+    depth = 1
+    line num = 87
+    other attributes = isKeyword
+
+111. string = identifier
+    text = EnumGuy
+    type = 65
+    depth = 1
+    line num = 87
+    other attributes = 
+
+112. string = .
+    text = 
+    type = 2
+    depth = 1
+    line num = 87
+    other attributes = isOperator
+
+113. string = identifier
+    text = FieldGuy
+    type = 65
+    depth = 1
+    line num = 87
+    other attributes = 
+
+114. string = identifier
+    text = some_field
+    type = 65
+    depth = 1
+    line num = 87
+    other attributes = 
+
+115. string = ;
+    text = 
+    type = 32
+    depth = 1
+    line num = 87
+    other attributes = isOperator
+
+116. string = comment
+    text = /***************************************************************************
+
+        Constructor.
+
+        Params:
+            quickly = suspended their campaigns
+            people = He was given control of the company
+
+    ***************************************************************************/
+    type = 64
+    depth = 1
+    line num = 90
+    other attributes = 
+
+117. string = public
+    text = 
+    type = 150
+    depth = 1
+    line num = 100
+    other attributes = isKeyword
+
+118. string = this
+    text = 
+    type = 164
+    depth = 1
+    line num = 100
+    other attributes = isKeyword
+
+119. string = (
+    text = 
+    type = 21
+    depth = 2
+    line num = 100
+    other attributes = isOperator
+
+120. string = identifier
+    text = Blacks
+    type = 65
+    depth = 2
+    line num = 100
+    other attributes = 
+
+121. string = identifier
+    text = quickly
+    type = 65
+    depth = 2
+    line num = 100
+    other attributes = 
+
+122. string = ,
+    text = 
+    type = 1
+    depth = 2
+    line num = 100
+    other attributes = isOperator
+
+123. string = identifier
+    text = Timer
+    type = 65
+    depth = 2
+    line num = 100
+    other attributes = 
+
+124. string = identifier
+    text = timer
+    type = 65
+    depth = 2
+    line num = 100
+    other attributes = 
+
+125. string = ,
+    text = 
+    type = 1
+    depth = 2
+    line num = 100
+    other attributes = isOperator
+
+126. string = uint
+    text = 
+    type = 173
+    depth = 2
+    line num = 100
+    other attributes = isBasicType
+
+127. string = identifier
+    text = cycles
+    type = 65
+    depth = 2
+    line num = 100
+    other attributes = 
+
+128. string = ,
+    text = 
+    type = 1
+    depth = 2
+    line num = 100
+    other attributes = isOperator
+
+129. string = identifier
+    text = Stats
+    type = 65
+    depth = 2
+    line num = 101
+    other attributes = 
+
+130. string = identifier
+    text = people
+    type = 65
+    depth = 2
+    line num = 101
+    other attributes = 
+
+131. string = )
+    text = 
+    type = 22
+    depth = 1
+    line num = 101
+    other attributes = isOperator
+
+132. string = {
+    text = 
+    type = 56
+    depth = 2
+    line num = 102
+    other attributes = isOperator
+
+133. string = this
+    text = 
+    type = 164
+    depth = 2
+    line num = 103
+    other attributes = isKeyword
+
+134. string = .
+    text = 
+    type = 2
+    depth = 2
+    line num = 103
+    other attributes = isOperator
+
+135. string = identifier
+    text = low
+    type = 65
+    depth = 2
+    line num = 103
+    other attributes = 
+
+136. string = =
+    text = 
+    type = 39
+    depth = 2
+    line num = 103
+    other attributes = isOperator
+
+137. string = new
+    text = 
+    type = 141
+    depth = 2
+    line num = 103
+    other attributes = isKeyword
+
+138. string = identifier
+    text = HashMap
+    type = 65
+    depth = 2
+    line num = 103
+    other attributes = 
+
+139. string = !
+    text = 
+    type = 7
+    depth = 2
+    line num = 103
+    other attributes = isOperator
+
+140. string = (
+    text = 
+    type = 21
+    depth = 3
+    line num = 103
+    other attributes = isOperator
+
+141. string = bool
+    text = 
+    type = 89
+    depth = 3
+    line num = 103
+    other attributes = isBasicType
+
+142. string = )
+    text = 
+    type = 22
+    depth = 2
+    line num = 103
+    other attributes = isOperator
+
+143. string = (
+    text = 
+    type = 21
+    depth = 3
+    line num = 103
+    other attributes = isOperator
+
+144. string = intLiteral
+    text = 6000
+    type = 72
+    depth = 3
+    line num = 103
+    other attributes = isNumberLiteral
+
+145. string = )
+    text = 
+    type = 22
+    depth = 2
+    line num = 103
+    other attributes = isOperator
+
+146. string = ;
+    text = 
+    type = 32
+    depth = 2
+    line num = 103
+    other attributes = isOperator
+
+147. string = super
+    text = 
+    type = 160
+    depth = 2
+    line num = 105
+    other attributes = isKeyword
+
+148. string = (
+    text = 
+    type = 21
+    depth = 3
+    line num = 105
+    other attributes = isOperator
+
+149. string = identifier
+    text = cycles
+    type = 65
+    depth = 3
+    line num = 105
+    other attributes = 
+
+150. string = )
+    text = 
+    type = 22
+    depth = 2
+    line num = 105
+    other attributes = isOperator
+
+151. string = ;
+    text = 
+    type = 32
+    depth = 2
+    line num = 105
+    other attributes = isOperator
+
+152. string = this
+    text = 
+    type = 164
+    depth = 2
+    line num = 107
+    other attributes = isKeyword
+
+153. string = .
+    text = 
+    type = 2
+    depth = 2
+    line num = 107
+    other attributes = isOperator
+
+154. string = identifier
+    text = company
+    type = 65
+    depth = 2
+    line num = 107
+    other attributes = 
+
+155. string = =
+    text = 
+    type = 39
+    depth = 2
+    line num = 107
+    other attributes = isOperator
+
+156. string = false
+    text = 
+    type = 115
+    depth = 2
+    line num = 107
+    other attributes = isKeyword
+
+157. string = ;
+    text = 
+    type = 32
+    depth = 2
+    line num = 107
+    other attributes = isOperator
+
+158. string = }
+    text = 
+    type = 60
+    depth = 1
+    line num = 108
+    other attributes = isOperator
+
+159. string = comment
+    text = /***************************************************************************
+
+        Fred was a silent partner in the initiative, due to his reputation
+        having been damaged in New York real estate circles, after
+        investigations into windfall profits and other abuses in his real estate
+        projects, making Donald the front man in the deal.
+
+    ***************************************************************************/
+    type = 64
+    depth = 1
+    line num = 111
+    other attributes = 
+
+160. string = protected
+    text = 
+    type = 149
+    depth = 1
+    line num = 120
+    other attributes = isKeyword
+
+161. string = void
+    text = 
+    type = 179
+    depth = 1
+    line num = 120
+    other attributes = isBasicType
+
+162. string = identifier
+    text = exchangeDonald
+    type = 65
+    depth = 1
+    line num = 120
+    other attributes = 
+
+163. string = (
+    text = 
+    type = 21
+    depth = 2
+    line num = 120
+    other attributes = isOperator
+
+164. string = )
+    text = 
+    type = 22
+    depth = 1
+    line num = 120
+    other attributes = isOperator
+
+165. string = {
+    text = 
+    type = 56
+    depth = 2
+    line num = 121
+    other attributes = isOperator
+
+166. string = if
+    text = 
+    type = 125
+    depth = 2
+    line num = 122
+    other attributes = isKeyword
+
+167. string = (
+    text = 
+    type = 21
+    depth = 3
+    line num = 122
+    other attributes = isOperator
+
+168. string = !
+    text = 
+    type = 7
+    depth = 3
+    line num = 122
+    other attributes = isOperator
+
+169. string = this
+    text = 
+    type = 164
+    depth = 3
+    line num = 122
+    other attributes = isKeyword
+
+170. string = .
+    text = 
+    type = 2
+    depth = 3
+    line num = 122
+    other attributes = isOperator
+
+171. string = identifier
+    text = estate
+    type = 65
+    depth = 3
+    line num = 122
+    other attributes = 
+
+172. string = )
+    text = 
+    type = 22
+    depth = 2
+    line num = 122
+    other attributes = isOperator
+
+173. string = {
+    text = 
+    type = 56
+    depth = 3
+    line num = 123
+    other attributes = isOperator
+
+174. string = identifier
+    text = log
+    type = 65
+    depth = 3
+    line num = 124
+    other attributes = 
+
+175. string = .
+    text = 
+    type = 2
+    depth = 3
+    line num = 124
+    other attributes = isOperator
+
+176. string = identifier
+    text = info
+    type = 65
+    depth = 3
+    line num = 124
+    other attributes = 
+
+177. string = (
+    text = 
+    type = 21
+    depth = 4
+    line num = 124
+    other attributes = isOperator
+
+178. string = stringLiteral
+    text = "Donald as he built"
+    type = 80
+    depth = 4
+    line num = 124
+    other attributes = isStringLiteral
+
+179. string = )
+    text = 
+    type = 22
+    depth = 3
+    line num = 124
+    other attributes = isOperator
+
+180. string = ;
+    text = 
+    type = 32
+    depth = 3
+    line num = 124
+    other attributes = isOperator
+
+181. string = if
+    text = 
+    type = 125
+    depth = 3
+    line num = 126
+    other attributes = isKeyword
+
+182. string = (
+    text = 
+    type = 21
+    depth = 4
+    line num = 126
+    other attributes = isOperator
+
+183. string = this
+    text = 
+    type = 164
+    depth = 4
+    line num = 126
+    other attributes = isKeyword
+
+184. string = .
+    text = 
+    type = 2
+    depth = 4
+    line num = 126
+    other attributes = isOperator
+
+185. string = identifier
+    text = circles
+    type = 65
+    depth = 4
+    line num = 126
+    other attributes = 
+
+186. string = )
+    text = 
+    type = 22
+    depth = 3
+    line num = 126
+    other attributes = isOperator
+
+187. string = {
+    text = 
+    type = 56
+    depth = 4
+    line num = 127
+    other attributes = isOperator
+
+188. string = this
+    text = 
+    type = 164
+    depth = 4
+    line num = 128
+    other attributes = isKeyword
+
+189. string = .
+    text = 
+    type = 2
+    depth = 4
+    line num = 128
+    other attributes = isOperator
+
+190. string = identifier
+    text = exchange
+    type = 65
+    depth = 4
+    line num = 128
+    other attributes = 
+
+191. string = =
+    text = 
+    type = 39
+    depth = 4
+    line num = 128
+    other attributes = isOperator
+
+192. string = stringLiteral
+    text = "string literal"
+    type = 80
+    depth = 4
+    line num = 128
+    other attributes = isStringLiteral
+
+193. string = ;
+    text = 
+    type = 32
+    depth = 4
+    line num = 128
+    other attributes = isOperator
+
+194. string = }
+    text = 
+    type = 60
+    depth = 3
+    line num = 129
+    other attributes = isOperator
+
+195. string = }
+    text = 
+    type = 60
+    depth = 2
+    line num = 130
+    other attributes = isOperator
+
+196. string = else
+    text = 
+    type = 111
+    depth = 2
+    line num = 131
+    other attributes = isKeyword
+
+197. string = {
+    text = 
+    type = 56
+    depth = 3
+    line num = 132
+    other attributes = isOperator
+
+198. string = comment
+    text = // Do nothing
+    type = 64
+    depth = 3
+    line num = 133
+    other attributes = 
+
+199. string = }
+    text = 
+    type = 60
+    depth = 2
+    line num = 134
+    other attributes = isOperator
+
+200. string = }
+    text = 
+    type = 60
+    depth = 1
+    line num = 135
+    other attributes = isOperator
+
+201. string = }
+    text = 
+    type = 60
+    depth = 0
+    line num = 136
+    other attributes = isOperator
+
