@@ -1,4 +1,4 @@
-total num tokens = 201
+total num tokens = 298
 1. string = comment
     text = /*******************************************************************************
 
@@ -1454,10 +1454,689 @@ total num tokens = 201
     line num = 135
     other attributes = isOperator
 
-201. string = }
+201. string = public
+    text = 
+    type = 150
+    depth = 1
+    line num = 137
+    other attributes = isKeyword
+
+202. string = identifier
+    text = string
+    type = 65
+    depth = 1
+    line num = 137
+    other attributes = 
+
+203. string = identifier
+    text = FooWithEnumParam
+    type = 65
+    depth = 1
+    line num = 137
+    other attributes = 
+
+204. string = (
+    text = 
+    type = 21
+    depth = 2
+    line num = 137
+    other attributes = isOperator
+
+205. string = identifier
+    text = Some
+    type = 65
+    depth = 2
+    line num = 137
+    other attributes = 
+
+206. string = .
+    text = 
+    type = 2
+    depth = 2
+    line num = 137
+    other attributes = isOperator
+
+207. string = identifier
+    text = Field
+    type = 65
+    depth = 2
+    line num = 137
+    other attributes = 
+
+208. string = identifier
+    text = x
+    type = 65
+    depth = 2
+    line num = 137
+    other attributes = 
+
+209. string = )
+    text = 
+    type = 22
+    depth = 1
+    line num = 137
+    other attributes = isOperator
+
+210. string = {
+    text = 
+    type = 56
+    depth = 2
+    line num = 138
+    other attributes = isOperator
+
+211. string = return
+    text = 
+    type = 154
+    depth = 2
+    line num = 139
+    other attributes = isKeyword
+
+212. string = stringLiteral
+    text = "hello"
+    type = 80
+    depth = 2
+    line num = 139
+    other attributes = isStringLiteral
+
+213. string = ;
+    text = 
+    type = 32
+    depth = 2
+    line num = 139
+    other attributes = isOperator
+
+214. string = }
+    text = 
+    type = 60
+    depth = 1
+    line num = 140
+    other attributes = isOperator
+
+215. string = public
+    text = 
+    type = 150
+    depth = 1
+    line num = 142
+    other attributes = isKeyword
+
+216. string = int
+    text = 
+    type = 131
+    depth = 1
+    line num = 142
+    other attributes = isBasicType
+
+217. string = identifier
+    text = templateFuncFoo
+    type = 65
+    depth = 1
+    line num = 142
+    other attributes = 
+
+218. string = (
+    text = 
+    type = 21
+    depth = 2
+    line num = 142
+    other attributes = isOperator
+
+219. string = identifier
+    text = T
+    type = 65
+    depth = 2
+    line num = 142
+    other attributes = 
+
+220. string = )
+    text = 
+    type = 22
+    depth = 1
+    line num = 142
+    other attributes = isOperator
+
+221. string = (
+    text = 
+    type = 21
+    depth = 2
+    line num = 142
+    other attributes = isOperator
+
+222. string = identifier
+    text = T
+    type = 65
+    depth = 2
+    line num = 142
+    other attributes = 
+
+223. string = [
+    text = 
+    type = 50
+    depth = 4
+    line num = 142
+    other attributes = isOperator
+
+224. string = ]
+    text = 
+    type = 51
+    depth = 2
+    line num = 142
+    other attributes = isOperator
+
+225. string = identifier
+    text = arr
+    type = 65
+    depth = 2
+    line num = 142
+    other attributes = 
+
+226. string = )
+    text = 
+    type = 22
+    depth = 1
+    line num = 142
+    other attributes = isOperator
+
+227. string = {
+    text = 
+    type = 56
+    depth = 2
+    line num = 143
+    other attributes = isOperator
+
+228. string = identifier
+    text = arr
+    type = 65
+    depth = 2
+    line num = 144
+    other attributes = 
+
+229. string = [
+    text = 
+    type = 50
+    depth = 4
+    line num = 144
+    other attributes = isOperator
+
+230. string = intLiteral
+    text = 0
+    type = 72
+    depth = 4
+    line num = 144
+    other attributes = isNumberLiteral
+
+231. string = ]
+    text = 
+    type = 51
+    depth = 2
+    line num = 144
+    other attributes = isOperator
+
+232. string = =
+    text = 
+    type = 39
+    depth = 2
+    line num = 144
+    other attributes = isOperator
+
+233. string = intLiteral
+    text = 5
+    type = 72
+    depth = 2
+    line num = 144
+    other attributes = isNumberLiteral
+
+234. string = ;
+    text = 
+    type = 32
+    depth = 2
+    line num = 144
+    other attributes = isOperator
+
+235. string = return
+    text = 
+    type = 154
+    depth = 2
+    line num = 145
+    other attributes = isKeyword
+
+236. string = identifier
+    text = arr
+    type = 65
+    depth = 2
+    line num = 145
+    other attributes = 
+
+237. string = [
+    text = 
+    type = 50
+    depth = 4
+    line num = 145
+    other attributes = isOperator
+
+238. string = intLiteral
+    text = 1
+    type = 72
+    depth = 4
+    line num = 145
+    other attributes = isNumberLiteral
+
+239. string = ]
+    text = 
+    type = 51
+    depth = 2
+    line num = 145
+    other attributes = isOperator
+
+240. string = ;
+    text = 
+    type = 32
+    depth = 2
+    line num = 145
+    other attributes = isOperator
+
+241. string = }
+    text = 
+    type = 60
+    depth = 1
+    line num = 146
+    other attributes = isOperator
+
+242. string = private
+    text = 
+    type = 148
+    depth = 1
+    line num = 148
+    other attributes = isKeyword
+
+243. string = void
+    text = 
+    type = 179
+    depth = 1
+    line num = 148
+    other attributes = isBasicType
+
+244. string = identifier
+    text = templateFuncBar
+    type = 65
+    depth = 1
+    line num = 148
+    other attributes = 
+
+245. string = (
+    text = 
+    type = 21
+    depth = 2
+    line num = 148
+    other attributes = isOperator
+
+246. string = identifier
+    text = T
+    type = 65
+    depth = 2
+    line num = 148
+    other attributes = 
+
+247. string = ,
+    text = 
+    type = 1
+    depth = 2
+    line num = 148
+    other attributes = isOperator
+
+248. string = identifier
+    text = U
+    type = 65
+    depth = 2
+    line num = 148
+    other attributes = 
+
+249. string = )
+    text = 
+    type = 22
+    depth = 1
+    line num = 148
+    other attributes = isOperator
+
+250. string = (
+    text = 
+    type = 21
+    depth = 2
+    line num = 148
+    other attributes = isOperator
+
+251. string = ref
+    text = 
+    type = 153
+    depth = 2
+    line num = 148
+    other attributes = isKeyword
+
+252. string = identifier
+    text = T
+    type = 65
+    depth = 2
+    line num = 148
+    other attributes = 
+
+253. string = identifier
+    text = a
+    type = 65
+    depth = 2
+    line num = 148
+    other attributes = 
+
+254. string = ,
+    text = 
+    type = 1
+    depth = 2
+    line num = 148
+    other attributes = isOperator
+
+255. string = identifier
+    text = U
+    type = 65
+    depth = 2
+    line num = 148
+    other attributes = 
+
+256. string = identifier
+    text = b
+    type = 65
+    depth = 2
+    line num = 148
+    other attributes = 
+
+257. string = )
+    text = 
+    type = 22
+    depth = 1
+    line num = 148
+    other attributes = isOperator
+
+258. string = {
+    text = 
+    type = 56
+    depth = 2
+    line num = 149
+    other attributes = isOperator
+
+259. string = auto
+    text = 
+    type = 87
+    depth = 2
+    line num = 150
+    other attributes = isKeyword
+
+260. string = identifier
+    text = c
+    type = 65
+    depth = 2
+    line num = 150
+    other attributes = 
+
+261. string = =
+    text = 
+    type = 39
+    depth = 2
+    line num = 150
+    other attributes = isOperator
+
+262. string = identifier
+    text = a
+    type = 65
+    depth = 2
+    line num = 150
+    other attributes = 
+
+263. string = +
+    text = 
+    type = 25
+    depth = 2
+    line num = 150
+    other attributes = isOperator
+
+264. string = identifier
+    text = b
+    type = 65
+    depth = 2
+    line num = 150
+    other attributes = 
+
+265. string = ;
+    text = 
+    type = 32
+    depth = 2
+    line num = 150
+    other attributes = isOperator
+
+266. string = }
+    text = 
+    type = 60
+    depth = 1
+    line num = 151
+    other attributes = isOperator
+
+267. string = protected
+    text = 
+    type = 149
+    depth = 1
+    line num = 153
+    other attributes = isKeyword
+
+268. string = identifier
+    text = string
+    type = 65
+    depth = 1
+    line num = 153
+    other attributes = 
+
+269. string = identifier
+    text = variadicFuncTemplate
+    type = 65
+    depth = 1
+    line num = 153
+    other attributes = 
+
+270. string = (
+    text = 
+    type = 21
+    depth = 2
+    line num = 153
+    other attributes = isOperator
+
+271. string = identifier
+    text = T
+    type = 65
+    depth = 2
+    line num = 153
+    other attributes = 
+
+272. string = ...
+    text = 
+    type = 4
+    depth = 2
+    line num = 153
+    other attributes = isOperator
+
+273. string = )
+    text = 
+    type = 22
+    depth = 1
+    line num = 153
+    other attributes = isOperator
+
+274. string = (
+    text = 
+    type = 21
+    depth = 2
+    line num = 153
+    other attributes = isOperator
+
+275. string = int
+    text = 
+    type = 131
+    depth = 2
+    line num = 153
+    other attributes = isBasicType
+
+276. string = identifier
+    text = a
+    type = 65
+    depth = 2
+    line num = 153
+    other attributes = 
+
+277. string = )
+    text = 
+    type = 22
+    depth = 1
+    line num = 153
+    other attributes = isOperator
+
+278. string = {
+    text = 
+    type = 56
+    depth = 2
+    line num = 154
+    other attributes = isOperator
+
+279. string = return
+    text = 
+    type = 154
+    depth = 2
+    line num = 155
+    other attributes = isKeyword
+
+280. string = stringLiteral
+    text = "hey"
+    type = 80
+    depth = 2
+    line num = 155
+    other attributes = isStringLiteral
+
+281. string = ;
+    text = 
+    type = 32
+    depth = 2
+    line num = 155
+    other attributes = isOperator
+
+282. string = }
+    text = 
+    type = 60
+    depth = 1
+    line num = 156
+    other attributes = isOperator
+
+283. string = private
+    text = 
+    type = 148
+    depth = 1
+    line num = 158
+    other attributes = isKeyword
+
+284. string = void
+    text = 
+    type = 179
+    depth = 1
+    line num = 158
+    other attributes = isBasicType
+
+285. string = identifier
+    text = variadicFuncNormal
+    type = 65
+    depth = 1
+    line num = 158
+    other attributes = 
+
+286. string = (
+    text = 
+    type = 21
+    depth = 2
+    line num = 158
+    other attributes = isOperator
+
+287. string = char
+    text = 
+    type = 98
+    depth = 2
+    line num = 158
+    other attributes = isBasicType
+
+288. string = identifier
+    text = c
+    type = 65
+    depth = 2
+    line num = 158
+    other attributes = 
+
+289. string = ,
+    text = 
+    type = 1
+    depth = 2
+    line num = 158
+    other attributes = isOperator
+
+290. string = ...
+    text = 
+    type = 4
+    depth = 2
+    line num = 158
+    other attributes = isOperator
+
+291. string = )
+    text = 
+    type = 22
+    depth = 1
+    line num = 158
+    other attributes = isOperator
+
+292. string = {
+    text = 
+    type = 56
+    depth = 2
+    line num = 159
+    other attributes = isOperator
+
+293. string = identifier
+    text = c
+    type = 65
+    depth = 2
+    line num = 160
+    other attributes = 
+
+294. string = =
+    text = 
+    type = 39
+    depth = 2
+    line num = 160
+    other attributes = isOperator
+
+295. string = characterLiteral
+    text = 'a'
+    type = 78
+    depth = 2
+    line num = 160
+    other attributes = 
+
+296. string = ;
+    text = 
+    type = 32
+    depth = 2
+    line num = 160
+    other attributes = isOperator
+
+297. string = }
+    text = 
+    type = 60
+    depth = 1
+    line num = 161
+    other attributes = isOperator
+
+298. string = }
     text = 
     type = 60
     depth = 0
-    line num = 136
+    line num = 162
     other attributes = isOperator
 

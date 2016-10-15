@@ -133,4 +133,30 @@ public class ModeImplementor : BaseImplementor
             // Do nothing
         }
     }
+
+    public string FooWithEnumParam (Some.Field x)
+    {
+        return "hello";
+    }
+
+    public int templateFuncFoo (T) (T[] arr)
+    {
+        arr[0] = 5;
+        return arr[1];
+    }
+
+    private void templateFuncBar (T, U) (ref T a, U b)
+    {
+        auto c = a + b;
+    }
+
+    protected string variadicFuncTemplate (T ...) (int a)
+    {
+        return "hey";
+    }
+
+    private void variadicFuncNormal (char c, ...)
+    {
+        c = 'a';
+    }
 }
