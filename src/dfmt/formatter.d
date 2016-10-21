@@ -169,7 +169,6 @@ struct TokenFormatter(OutputRange)
                 maxDepth = depth;
             }
         }
-        inClassOrStructStack.length = maxDepth;
     }
 
     /// Runs the formatting process
@@ -179,6 +178,12 @@ struct TokenFormatter(OutputRange)
         {
             writeDefaultModuleHeader();
         }
+
+        BlockInfo b;
+        b.type = BlockType.Global;
+        b.name = "";
+
+        blocksStack ~= b;
 
         while (index < tokens.length)
             formatStep();
@@ -239,7 +244,7 @@ private:
     bool inAsm;
 
     /// True if we're currently in a class or struct block
-    bool inClassOrStruct;
+    // bool inClassOrStruct;
 
     /// The protection attribute of the current symbol, if defined
     string curProtectionAttribute;
@@ -254,10 +259,6 @@ private:
     /// or struct
     bool inMemberFunctionSignature;
 
-    /// True if we're currently in the body of a member function of a class or
-    /// struct
-    bool inMemberFunctionBody;
-
     struct Parameter
     {
         string type;
@@ -269,13 +270,33 @@ private:
 
     bool lookingForParamType;
 
-    /// Stack to help us determine if we should be in a class or struct block
-    /// when the depth changes
-    bool[] inClassOrStructStack;
-
     /// Module header sections
     string[] moduleHdrSections;
 
+    enum BlockType
+    {
+        Global,
+        ModuleConstructor,
+        Struct,
+        Class,
+        Function,
+        Loop,
+        IfElse,
+        Switch,
+        None
+    }
+
+    struct BlockInfo
+    {
+        BlockType type;
+        string name;
+    }
+
+    BlockInfo[] blocksStack;
+
+    BlockInfo potentialNextBlock;
+
+    bool expectBlockStart;
 
 
 
@@ -325,16 +346,42 @@ private:
 
         auto curDepth = depths[index];
 
-        if (currentIs(tok!"}"))
+        if (currentIs(tok!"{"))
         {
-            if (curDepth > 0)
+            stderr.writefln("BLK: Entering a block at line %s", current.line);
+            if (expectBlockStart)
             {
-                inClassOrStruct = inClassOrStructStack[curDepth - 1];
+                blocksStack ~= potentialNextBlock;
+                stderr.writefln("    BLK: type = '%s', name = '%s'",
+                    blocksStack[$-1].type, blocksStack[$-1].name);
+                expectBlockStart = false;
             }
-            else
+        }
+        else if (currentIs(tok!"}"))
+        {
+            stderr.writefln("BLK: Exiting a block at line %s", current.line);
+            blocksStack = blocksStack[0 .. $-1];
+            stderr.writefln("    BLK: back into type = '%s', name = '%s'",
+                blocksStack[$-1].type, blocksStack[$-1].name);
+        }
+        else if (currentIs(tok!";"))
+        {
+            if (expectBlockStart)
             {
-                inClassOrStruct = false;
+                // A semi-colon was hit when we were expecting a block to start.
+                // This would happen in cases where a single statement is under
+                // an if/else block or within a loop, and the programmer has
+                // decided to not enclose it within curly braces. So we simply
+                // stop expecting a block to start.
+
+                expectBlockStart = false;
             }
+        }
+        else if (currentIs(tok!"if"))
+        {
+            expectBlockStart = true;
+            potentialNextBlock.type = BlockType.IfElse;
+            potentialNextBlock.name = "";
         }
 
         if (currentIs(tok!"comment"))
@@ -425,6 +472,13 @@ private:
         }
         else if (currentIs(tok!"else"))
         {
+            if (blocksStack[$-1].type == BlockType.Function)
+            {
+                expectBlockStart = true;
+                potentialNextBlock.type = BlockType.IfElse;
+                potentialNextBlock.name = "";
+            }
+
             formatElse();
         }
         else if (currentIs(tok!"asm"))
@@ -450,16 +504,30 @@ private:
         }
         else if (isKeyword(current.type))
         {
-            if (currentIs(tok!"class") || currentIs(tok!"struct"))
+            if (currentIs(tok!"static") && peekIs(tok!"this") &&
+                blocksStack[$-1].type == BlockType.Global)
             {
-                inClassOrStruct = true;
-                inClassOrStructStack[curDepth] = true;
+                // This is the "static" at the start of a module constructor
+                expectBlockStart = true;
+
+                potentialNextBlock.type = BlockType.ModuleConstructor;
+                potentialNextBlock.name = "";
+            }
+            else if (currentIs(tok!"class"))
+            {
+                expectBlockStart = true;
+                potentialNextBlock.type = BlockType.Class;
+            }
+            else if (currentIs(tok!"struct"))
+            {
+                expectBlockStart = true;
+                potentialNextBlock.type = BlockType.Struct;
             }
             else if (inClassOrStruct)
             {
                 // We've encountered a keyword when we're already within an
                 // aggregate.
-                if (inMemberFunctionSignature || inMemberFunctionBody)
+                if (inMemberFunctionSignature)
                 {
                 }
                 else
@@ -480,6 +548,11 @@ private:
                         Parameter p;
                         curFunctionParams ~= p;
                         lookingForParamType = true;
+
+                        expectBlockStart = true;
+                        potentialNextBlock.type = BlockType.Function;
+                        potentialNextBlock.name =
+                            "constructor of " ~ blocksStack[$-1].name;
                     }
                 }
             }
@@ -496,7 +569,7 @@ private:
                     // of the current parameter.
                     curFunctionParams[$ - 1].type ~= str(current.type);
                 }
-                else if (inMemberFunctionBody)
+                else if (blocksStack[$-1].type == BlockType.Function)
                 {
                 }
                 else
@@ -545,7 +618,6 @@ stderr.writefln("Parameter parsing complete");
                             // All parameters have been parsed. The member
                             // function body will start next.
                             inMemberFunctionSignature = false;
-                            inMemberFunctionBody = true;
 
                             // Remove the last entry of the 'curFunctionParams'
                             // array. It was only a pre-created empty entry.
@@ -553,7 +625,7 @@ stderr.writefln("Parameter parsing complete");
                         }
                     }
                 }
-                else if (inMemberFunctionBody)
+                else if (blocksStack[$-1].type == BlockType.Function)
                 {
                 }
                 else
@@ -576,13 +648,28 @@ stderr.writefln("Parameter parsing complete");
         }
         else if (currentIs(tok!"identifier"))
         {
+            if (peekBackIs(tok!"class") || peekBackIs(tok!"struct"))
+            {
+                stderr.writefln("%s name",
+                    peekBackIs(tok!"class") ? "class" : "struct");
+
+                if (expectBlockStart)
+                {
+                    potentialNextBlock.name = current.text;
+                }
+            }
+            else if (peekBackIs(tok!":") || peekBackIs(tok!","))
+            {
+                stderr.writefln("base class");
+            }
+
             if (inClassOrStruct)
             {
                 if (inMemberFunctionSignature)
                 {
                     handleInMemberFuncSigIdentifier();
                 }
-                else if (inMemberFunctionBody)
+                else if (blocksStack[$-1].type == BlockType.Function)
                 {
                 }
                 else
@@ -609,28 +696,20 @@ stderr.writefln("Parameter parsing complete");
             writeToken();
     }
 
+    bool inClassOrStruct ()
+    {
+        return ((blocksStack[$-1].type == BlockType.Class) ||
+            (blocksStack[$-1].type == BlockType.Struct));
+    }
+
     void handleInAggregateIdentifier()
     in
     {
-        assert(currentIs(tok!"identifier") && inClassOrStruct);
+        assert(currentIs(tok!"identifier"));
     }
     body
     {
         stderr.writef("%s --> ", current.text);
-        if (peekBackIs(tok!"class") || peekBackIs(tok!"struct"))
-        {
-            // This is the name of either the outer class itself or a nested
-            // class, so not really an identifier.
-            stderr.writefln("%s name",
-                peekBackIs(tok!"class") ? "class" : "struct");
-            return;
-        }
-        else if (peekBackIs(tok!":") || peekBackIs(tok!","))
-        {
-            // This is the name of a base class, so not really an identifier.
-            stderr.writefln("base class");
-            return;
-        }
 
         if (!memberTypeFound)
         {
@@ -668,6 +747,10 @@ stderr.writefln("Parameter parsing complete");
             Parameter p;
             curFunctionParams ~= p;
             lookingForParamType = true;
+
+            expectBlockStart = true;
+            potentialNextBlock.type = BlockType.Function;
+            potentialNextBlock.name = current.text;
         }
         else
         {
@@ -680,7 +763,8 @@ stderr.writefln("Parameter parsing complete");
     in
     {
         assert(currentIs(tok!"identifier") && inClassOrStruct &&
-            inMemberFunctionSignature && !inMemberFunctionBody);
+            inMemberFunctionSignature &&
+            blocksStack[$-1].type != BlockType.Function);
     }
     body
     {
