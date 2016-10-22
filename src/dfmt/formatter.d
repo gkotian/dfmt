@@ -352,21 +352,27 @@ private:
 
         if (currentIs(tok!"{"))
         {
-            log.writefln("BLK: Entering a block at line %s", current.line);
             if (expectBlockStart)
             {
                 blocksStack ~= potentialNextBlock;
-                log.writefln("    BLK: type = '%s', name = '%s'",
-                    blocksStack[$-1].type, blocksStack[$-1].name);
                 expectBlockStart = false;
             }
+            else
+            {
+                BlockInfo b;
+                b.type = BlockType.None;
+                b.name = "";
+                blocksStack ~= b;
+            }
+            log.writefln("BLK: %s: Entered block (type = '%s', name = '%s')",
+                current.line, blocksStack[$-1].type, blocksStack[$-1].name);
         }
         else if (currentIs(tok!"}"))
         {
-            log.writefln("BLK: Exiting a block at line %s", current.line);
             blocksStack = blocksStack[0 .. $-1];
-            log.writefln("    BLK: back into type = '%s', name = '%s'",
-                blocksStack[$-1].type, blocksStack[$-1].name);
+            log.writefln("BLK: %s: Exited block " ~
+                "(back into type = '%s', name = '%s')",
+                current.line, blocksStack[$-1].type, blocksStack[$-1].name);
         }
         else if (currentIs(tok!";"))
         {
@@ -613,14 +619,16 @@ private:
                             foreach(ref p; curFunctionParams[0 .. $ - 1])
                             {
                                 log.writefln(
-                                    "ELEM: Marking '%s' as template param",
-                                    p.name);
+                                    "ELM: %s: Marking '%s' as template param",
+                                    current.line, p.name);
                                 p.isTemplateParam = true;
                             }
                         }
                         else
                         {
-                            log.writefln("ELEM: Parameter parsing complete");
+                            log.writefln("ELM: %s: Parameter parsing complete",
+                                current.line);
+
                             // All parameters have been parsed. The member
                             // function body will start next.
                             inMemberFunctionSignature = false;
@@ -656,7 +664,7 @@ private:
         {
             if (peekBackIs(tok!"class") || peekBackIs(tok!"struct"))
             {
-                log.writefln("ELEM: %s name",
+                log.writefln("ELM: %s: %s name", current.line,
                     peekBackIs(tok!"class") ? "class" : "struct");
 
                 if (expectBlockStart)
@@ -666,7 +674,7 @@ private:
             }
             else if (peekBackIs(tok!":") || peekBackIs(tok!","))
             {
-                log.writefln("ELEM: base class");
+                log.writefln("ELM: %s: base class", current.line);
             }
 
             if (inClassOrStruct)
@@ -715,7 +723,7 @@ private:
     }
     body
     {
-        log.writef("ELEM: %s --> ", current.text);
+        log.writef("ELM: %s: %s --> ", current.line, current.text);
 
         if (!memberTypeFound)
         {
@@ -725,7 +733,7 @@ private:
             {
                 curType = current.text;
 
-                log.writefln("ELEM: type");
+                log.writefln("type");
 
                 if (curProtectionAttribute.length == 0)
                 {
@@ -738,14 +746,14 @@ private:
 
         if (peekBackIs(tok!"."))
         {
-            log.writefln("ELEM: continues to be part of the type");
+            log.writefln("continues to be part of the type");
             curType ~= current.text;
             return;
         }
 
         if (peekIs(tok!"("))
         {
-            log.writefln("ELEM: member function");
+            log.writefln("member function with return type '%s'", curType);
             inMemberFunctionSignature = true;
             curFunctionParams.length = 0;
 
@@ -760,7 +768,7 @@ private:
         }
         else
         {
-            log.writefln("ELEM: %s member variable of type '%s'",
+            log.writefln("%s member variable of type '%s'",
                 curProtectionAttribute, curType);
         }
     }
@@ -774,7 +782,7 @@ private:
     }
     body
     {
-        log.writef("ELEM: %s --> ", current.text);
+        log.writef("ELM: %s: %s --> ", current.line, current.text);
 
         if (lookingForParamType)
         {
@@ -783,12 +791,12 @@ private:
                 curFunctionParams[$ - 1].type = current.text;
                 lookingForParamType = false;
 
-                log.writefln("ELEM: just the type of the next parameter");
+                log.writefln("just the type of the next parameter");
             }
             else
             {
                 curFunctionParams[$ - 1].name = current.text;
-                log.writefln("ELEM: parameter of type '%s'",
+                log.writefln("parameter of type '%s'",
                     curFunctionParams[$ - 1].type);
 
                 // Pre-create space for the next parameter info
@@ -801,15 +809,14 @@ private:
 
         if (peekBackIs(tok!"."))
         {
-            log.writefln("ELEM: continues to be part of the type");
+            log.writefln("continues to be part of the type");
             curFunctionParams[$ - 1].type ~= current.text;
             return;
         }
 
         curFunctionParams[$ - 1].name = current.text;
 
-        log.writefln("ELEM: parameter of type '%s'",
-            curFunctionParams[$ - 1].type);
+        log.writefln("parameter of type '%s'", curFunctionParams[$ - 1].type);
 
         // Pre-create space for the next parameter info
         Parameter p;
