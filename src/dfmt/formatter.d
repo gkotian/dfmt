@@ -259,9 +259,10 @@ private:
     /// The type of the current symbol
     string curType;
 
-    /// True if we're currently in the signature of a member function of a class
-    /// or struct
+    /// True if we're currently in a signature
     bool inMemberFunctionSignature;
+    bool inClassSignature;
+    bool inStructSignature;
 
     struct Parameter
     {
@@ -350,6 +351,13 @@ private:
 
         auto curDepth = depths[index];
 
+// enum DEBUG_LINE_NUMS = [107, 108, 120];
+// if (current.line == DEBUG_LINE_NUMS[0] || current.line == DEBUG_LINE_NUMS[1] ||
+//     current.line == DEBUG_LINE_NUMS[2])
+// {
+//     log.writefln("at line %s, string = %s, text = %s : curProtectionAttribute = %s, curType = %s",
+//                  current.line, str(current.type), current.text, curProtectionAttribute, curType);
+// }
         if (currentIs(tok!"{"))
         {
             if (expectBlockStart)
@@ -366,6 +374,11 @@ private:
             }
             log.writefln("BLK: %s: Entered block (type = '%s', name = '%s')",
                 current.line, blocksStack[$-1].type, blocksStack[$-1].name);
+
+            // If we entered a block, we can't be in a signature anymore
+            inClassSignature = false;
+            inStructSignature = false;
+            inMemberFunctionSignature = false;
         }
         else if (currentIs(tok!"}"))
         {
@@ -536,7 +549,7 @@ private:
             else if (inClassOrStruct)
             {
                 // We've encountered a keyword when we're already within an
-                // aggregate.
+                // aggregate (but outside a member function of the aggregate).
                 if (inMemberFunctionSignature)
                 {
                 }
@@ -631,16 +644,13 @@ private:
 
                             // All parameters have been parsed. The member
                             // function body will start next.
-                            inMemberFunctionSignature = false;
+                            // inMemberFunctionSignature = false;
 
                             // Remove the last entry of the 'curFunctionParams'
                             // array. It was only a pre-created empty entry.
                             curFunctionParams = curFunctionParams[0 .. $ - 1];
                         }
                     }
-                }
-                else if (blocksStack[$-1].type == BlockType.Function)
-                {
                 }
                 else
                 {
@@ -652,8 +662,13 @@ private:
                     }
                     else
                     {
-                        // This operator continues to be part of the current type
-                        curType ~= str(current.type);
+                        if (currentIs(tok!".") || currentIs(tok!"!") ||
+                            currentIs(tok!",") || currentIs(tok!"(") ||
+                            currentIs(tok!")"))
+                        {
+                            // This operator continues to be part of the current type
+                            curType ~= str(current.type);
+                        }
                     }
                 }
             }
@@ -662,19 +677,38 @@ private:
         }
         else if (currentIs(tok!"identifier"))
         {
-            if (peekBackIs(tok!"class") || peekBackIs(tok!"struct"))
+            if (peekBackIs(tok!"class"))
             {
-                log.writefln("ELM: %s: %s name", current.line,
-                    peekBackIs(tok!"class") ? "class" : "struct");
+                inClassSignature = true;
+                log.writefln("ELM: %s: class name", current.line);
 
                 if (expectBlockStart)
                 {
+                    // The type was already set on the 'class' keyword
+                    potentialNextBlock.name = current.text;
+                }
+            }
+            else if (peekBackIs(tok!"struct"))
+            {
+                inStructSignature = true;
+                log.writefln("ELM: %s: struct name", current.line);
+
+                if (expectBlockStart)
+                {
+                    // The type was already set on the 'struct' keyword
                     potentialNextBlock.name = current.text;
                 }
             }
             else if (peekBackIs(tok!":") || peekBackIs(tok!","))
             {
-                log.writefln("ELM: %s: base class", current.line);
+                if (inClassSignature)
+                {
+                    log.writefln("ELM: %s: base class", current.line);
+                }
+                else if (inStructSignature)
+                {
+                    log.writefln("ELM: %s: base struct", current.line);
+                }
             }
 
             if (inClassOrStruct)
@@ -753,7 +787,8 @@ private:
 
         if (peekIs(tok!"("))
         {
-            log.writefln("member function with return type '%s'", curType);
+            log.writefln("%s member function with return type '%s'",
+                curProtectionAttribute, curType);
             inMemberFunctionSignature = true;
             curFunctionParams.length = 0;
 
@@ -771,6 +806,10 @@ private:
             log.writefln("%s member variable of type '%s'",
                 curProtectionAttribute, curType);
         }
+
+memberTypeFound = false;
+curType = "";
+curProtectionAttribute = "";
     }
 
     void handleInMemberFuncSigIdentifier()
