@@ -141,6 +141,8 @@ immutable(short[]) generateDepthInfo(const Token[] tokens) pure nothrow @trusted
 
 struct TokenFormatter(OutputRange)
 {
+    File log;
+
     /**
      * Params:
      *     rawSource = ?
@@ -169,6 +171,8 @@ struct TokenFormatter(OutputRange)
                 maxDepth = depth;
             }
         }
+
+        log = File("log_file.txt", "w");
     }
 
     /// Runs the formatting process
@@ -348,20 +352,20 @@ private:
 
         if (currentIs(tok!"{"))
         {
-            stderr.writefln("BLK: Entering a block at line %s", current.line);
+            log.writefln("BLK: Entering a block at line %s", current.line);
             if (expectBlockStart)
             {
                 blocksStack ~= potentialNextBlock;
-                stderr.writefln("    BLK: type = '%s', name = '%s'",
+                log.writefln("    BLK: type = '%s', name = '%s'",
                     blocksStack[$-1].type, blocksStack[$-1].name);
                 expectBlockStart = false;
             }
         }
         else if (currentIs(tok!"}"))
         {
-            stderr.writefln("BLK: Exiting a block at line %s", current.line);
+            log.writefln("BLK: Exiting a block at line %s", current.line);
             blocksStack = blocksStack[0 .. $-1];
-            stderr.writefln("    BLK: back into type = '%s', name = '%s'",
+            log.writefln("    BLK: back into type = '%s', name = '%s'",
                 blocksStack[$-1].type, blocksStack[$-1].name);
         }
         else if (currentIs(tok!";"))
@@ -608,13 +612,15 @@ private:
                             // is only a pre-created empty entry.
                             foreach(ref p; curFunctionParams[0 .. $ - 1])
                             {
-                                stderr.writefln("Marking '%s' as template param", p.name);
+                                log.writefln(
+                                    "ELEM: Marking '%s' as template param",
+                                    p.name);
                                 p.isTemplateParam = true;
                             }
                         }
                         else
                         {
-stderr.writefln("Parameter parsing complete");
+                            log.writefln("ELEM: Parameter parsing complete");
                             // All parameters have been parsed. The member
                             // function body will start next.
                             inMemberFunctionSignature = false;
@@ -650,7 +656,7 @@ stderr.writefln("Parameter parsing complete");
         {
             if (peekBackIs(tok!"class") || peekBackIs(tok!"struct"))
             {
-                stderr.writefln("%s name",
+                log.writefln("ELEM: %s name",
                     peekBackIs(tok!"class") ? "class" : "struct");
 
                 if (expectBlockStart)
@@ -660,7 +666,7 @@ stderr.writefln("Parameter parsing complete");
             }
             else if (peekBackIs(tok!":") || peekBackIs(tok!","))
             {
-                stderr.writefln("base class");
+                log.writefln("ELEM: base class");
             }
 
             if (inClassOrStruct)
@@ -709,7 +715,7 @@ stderr.writefln("Parameter parsing complete");
     }
     body
     {
-        stderr.writef("%s --> ", current.text);
+        log.writef("ELEM: %s --> ", current.text);
 
         if (!memberTypeFound)
         {
@@ -719,7 +725,7 @@ stderr.writefln("Parameter parsing complete");
             {
                 curType = current.text;
 
-                stderr.writefln("type");
+                log.writefln("ELEM: type");
 
                 if (curProtectionAttribute.length == 0)
                 {
@@ -732,14 +738,14 @@ stderr.writefln("Parameter parsing complete");
 
         if (peekBackIs(tok!"."))
         {
-            stderr.writefln("continues to be part of the type");
+            log.writefln("ELEM: continues to be part of the type");
             curType ~= current.text;
             return;
         }
 
         if (peekIs(tok!"("))
         {
-            stderr.writefln("member function");
+            log.writefln("ELEM: member function");
             inMemberFunctionSignature = true;
             curFunctionParams.length = 0;
 
@@ -754,7 +760,7 @@ stderr.writefln("Parameter parsing complete");
         }
         else
         {
-            stderr.writefln("%s member variable of type '%s'",
+            log.writefln("ELEM: %s member variable of type '%s'",
                 curProtectionAttribute, curType);
         }
     }
@@ -768,7 +774,7 @@ stderr.writefln("Parameter parsing complete");
     }
     body
     {
-        stderr.writef("%s --> ", current.text);
+        log.writef("ELEM: %s --> ", current.text);
 
         if (lookingForParamType)
         {
@@ -777,12 +783,13 @@ stderr.writefln("Parameter parsing complete");
                 curFunctionParams[$ - 1].type = current.text;
                 lookingForParamType = false;
 
-                stderr.writefln("just the type of the next parameter");
+                log.writefln("ELEM: just the type of the next parameter");
             }
             else
             {
                 curFunctionParams[$ - 1].name = current.text;
-                stderr.writefln("parameter of type '%s'", curFunctionParams[$ - 1].type);
+                log.writefln("ELEM: parameter of type '%s'",
+                    curFunctionParams[$ - 1].type);
 
                 // Pre-create space for the next parameter info
                 Parameter p;
@@ -794,14 +801,15 @@ stderr.writefln("Parameter parsing complete");
 
         if (peekBackIs(tok!"."))
         {
-            stderr.writefln("continues to be part of the type");
+            log.writefln("ELEM: continues to be part of the type");
             curFunctionParams[$ - 1].type ~= current.text;
             return;
         }
 
         curFunctionParams[$ - 1].name = current.text;
 
-        stderr.writefln("parameter of type '%s'", curFunctionParams[$ - 1].type);
+        log.writefln("ELEM: parameter of type '%s'",
+            curFunctionParams[$ - 1].type);
 
         // Pre-create space for the next parameter info
         Parameter p;
@@ -2429,8 +2437,9 @@ stderr.writefln("Parameter parsing complete");
 
         stderr.writeln("");
         stderr.writefln("Break-up of block comment on line: %s",
-                 blockCommentStartLineNum);
-        stderr.writefln("    Total num sections = %s", blockCommentSections.length);
+            blockCommentStartLineNum);
+        stderr.writefln("    Total num sections = %s",
+            blockCommentSections.length);
 
         foreach (i, section; blockCommentSections)
         {
@@ -2451,7 +2460,8 @@ stderr.writefln("Parameter parsing complete");
             {
                 stderr.writefln("            has sub sections: no");
 
-                stderr.writefln("            num lines = %s", section.lines.length);
+                stderr.writefln("            num lines = %s",
+                    section.lines.length);
                 foreach (j, line; section.lines)
                 {
                     stderr.writefln("            %s: %s", j, line);
